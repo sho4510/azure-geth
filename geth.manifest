@@ -1,0 +1,118 @@
+[loader]
+entrypoint = "file:/usr/lib/x86_64-linux-gnu/gramine/libsysdb.so"
+log_level = "debug"
+argv_src_file = "file:geth.args"
+
+[loader.env]
+LD_LIBRARY_PATH = "/lib:/lib/x86_64-linux-gnu:/usr/lib:/usr//lib/x86_64-linux-gnu"
+
+[libos]
+entrypoint = "./geth"
+
+[sys]
+enable_sigterm_injection = true
+enable_extra_runtime_domain_names_conf = true
+insecure__allow_eventfd = true
+experimental__enable_flock = true
+
+[sgx]
+remote_attestation = "none"
+nonpie_binary = true
+enclave_size = "16G"
+edmm_enable = false
+max_threads = 128
+debug = true
+thread_num = 16
+trusted_files = [
+    { uri = "file:/usr/lib/x86_64-linux-gnu/gramine/libsysdb.so" },
+    { uri = "file:./geth" },
+    { uri = "file:/usr/lib/x86_64-linux-gnu/gramine/runtime/glibc/" },
+    { uri = "file:/lib/x86_64-linux-gnu/" },
+    { uri = "file:/usr//lib/x86_64-linux-gnu/" },
+    { uri = "file:geth" },
+    { uri = "file:geth.args" },
+    { uri = "file:/etc/ssl/certs/ca-certificates.crt" },
+    { uri = "file:/lib/ssl/certs/" },
+    { uri = "file:/etc/ssl/certs/" },
+]
+allowed_files = [
+    "file:/etc/nsswitch.conf",
+    "file:/etc/localtime",
+    "file:/etc/hosts",
+    "file:/etc/passwd",
+    "file:/etc/jwt.hex",
+    "file:/data",
+    "file:data",
+    "file:go-ethereum/geth-network/miner/keystore/",
+    "file:go-ethereum/geth-network/miner/geth/chaindata/",
+    "file:go-ethereum/geth-network/miner/geth/chaindata",
+    "file:go-ethereum/geth-network/miner/geth/",
+    "file:go-ethereum/geth-network/miner/",
+]
+isvprodid = 0
+isvsvn = 0
+enable_stats = false
+use_exinfo = false
+
+[sgx.cpu_features]
+avx = "unspecified"
+avx512 = "unspecified"
+amx = "unspecified"
+mpx = "disabled"
+pkru = "disabled"
+
+[[fs.mounts]]
+path = "/lib"
+uri = "file:/usr/lib/x86_64-linux-gnu/gramine/runtime/glibc"
+
+[[fs.mounts]]
+path = "/lib/x86_64-linux-gnu"
+uri = "file:/lib/x86_64-linux-gnu"
+
+[[fs.mounts]]
+path = "/usr"
+uri = "file:/usr"
+
+[[fs.mounts]]
+path = "/etc"
+uri = "file:/etc"
+
+[[fs.mounts]]
+type = "tmpfs"
+path = "/root/.ethereum"
+
+[[fs.mounts]]
+type = "tmpfs"
+path = "/tmp"
+
+[[fs.mounts]]
+path = "/geth"
+uri = "file:geth"
+
+[[fs.mounts]]
+path = "/go-ethereum/geth-network/"
+uri = "file:go-ethereum/geth-network/"
+
+[[fs.mounts]]
+path = "/go-ethereum/geth-network/miner/geth/"
+uri = "file:go-ethereum/geth-network/miner/geth/"
+
+[[fs.mounts]]
+path = "/go-ethereum/geth-network/miner/"
+uri = "file:go-ethereum/geth-network/miner/"
+
+[[fs.mounts]]
+path = "/go-ethereum/geth-network/miner/geth/chaindata/"
+uri = "file:go-ethereum/geth-network/miner/geth/chaindata/"
+
+[[fs.mounts]]
+path = "/go-ethereum/geth-network/miner/geth/chaindata/ancient/"
+uri = "file:go-ethereum/geth-network/miner/geth/chaindata/ancient/"
+
+[[fs.mounts]]
+path = "/lib/ssl/certs/"
+uri = "file:/lib/ssl/certs/"
+
+[[fs.mounts]]
+path = "/etc/ssl/certs/"
+uri = "file:/etc/ssl/certs/"

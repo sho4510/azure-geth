@@ -1,0 +1,70 @@
+
+loader.entrypoint = "file:{{ gramine.libos }}"
+
+# Entrypoint binary which Gramine invokes.
+libos.entrypoint = "{{ entrypoint }}"
+
+loader.log_level = "debug"
+
+loader.env.LD_LIBRARY_PATH = "/lib:{{ arch_libdir }}:/usr/lib:/usr/{{ arch_libdir }}"
+
+loader.argv_src_file = "file:geth.args"
+
+sys.enable_sigterm_injection = true
+sys.enable_extra_runtime_domain_names_conf = true
+sys.insecure__allow_eventfd = true
+sys.experimental__enable_flock = true
+
+sgx.remote_attestation = "none"
+
+fs.mounts = [
+  { path = "/lib", uri = "file:{{ gramine.runtimedir() }}" },
+  { path = "{{ arch_libdir }}", uri = "file:{{ arch_libdir }}" },
+  { path = "/usr", uri = "file:/usr" },
+  { path = "/etc", uri = "file:/etc" },
+  { type = "tmpfs", path = "/root/.ethereum" },
+  { type = "tmpfs", path = "/tmp" },
+  { path = "/geth", uri = "file:geth" },
+  { path = "/go-ethereum/geth-network/", uri = "file:go-ethereum/geth-network/" },
+  { path = "/go-ethereum/geth-network/miner/geth/", uri = "file:go-ethereum/geth-network/miner/geth/" },
+  { path = "/go-ethereum/geth-network/miner/", uri = "file:go-ethereum/geth-network/miner/" },
+  { path = "/go-ethereum/geth-network/miner/geth/chaindata/", uri = "file:go-ethereum/geth-network/miner/geth/chaindata/" },
+  { path = "/go-ethereum/geth-network/miner/geth/chaindata/ancient/", uri = "file:go-ethereum/geth-network/miner/geth/chaindata/ancient/" },
+  { path = "/lib/ssl/certs/", uri = "file:/lib/ssl/certs/" },
+  { path = "/etc/ssl/certs/", uri = "file:/etc/ssl/certs/" }, 
+]
+
+sgx.nonpie_binary = true
+sgx.enclave_size = "{{ enclave_size }}"
+sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
+sgx.max_threads = 128
+sgx.debug = true
+sgx.thread_num = 16
+
+sgx.trusted_files = [
+  "file:{{ gramine.libos }}",
+  "file:{{ entrypoint }}",
+  "file:{{ gramine.runtimedir() }}/",
+  "file:{{ arch_libdir }}/",
+  "file:/usr/{{ arch_libdir }}/",
+  "file:geth",
+  "file:geth.args",
+  "file:/etc/ssl/certs/ca-certificates.crt",
+  "file:/lib/ssl/certs/",
+  "file:/etc/ssl/certs/",
+]
+
+sgx.allowed_files = [
+  "file:/etc/nsswitch.conf",
+  "file:/etc/localtime",
+  "file:/etc/hosts",
+  "file:/etc/passwd",
+  "file:/etc/jwt.hex",
+  "file:/data",
+  "file:data",
+  "file:go-ethereum/geth-network/miner/keystore/",
+  "file:go-ethereum/geth-network/miner/geth/chaindata/",
+  "file:go-ethereum/geth-network/miner/geth/chaindata",
+  "file:go-ethereum/geth-network/miner/geth/",
+  "file:go-ethereum/geth-network/miner/",
+]
